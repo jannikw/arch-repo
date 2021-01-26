@@ -1,0 +1,52 @@
+pkgbase = linux-vfio
+	pkgdesc = Linux
+	pkgver = 5.10.9.arch1
+	pkgrel = 1
+	url = https://git.archlinux.org/linux.git/log/?h=v5.10.9-arch1
+	arch = x86_64
+	license = GPL2
+	makedepends = bc
+	makedepends = kmod
+	makedepends = libelf
+	makedepends = pahole
+	makedepends = cpio
+	makedepends = perl
+	makedepends = tar
+	makedepends = xz
+	makedepends = xmlto
+	makedepends = python-sphinx
+	makedepends = python-sphinx_rtd_theme
+	makedepends = graphviz
+	makedepends = imagemagick
+	makedepends = git
+	options = !strip
+	source = archlinux-linux::git+https://git.archlinux.org/linux.git?signed#tag=v5.10.9-arch1
+	source = config
+	source = add-acs-overrides.patch
+	source = i915-vga-arbiter.patch
+	validpgpkeys = ABAF11C65A2970B130ABE3C479BE3E4300411886
+	validpgpkeys = 647F28654894E3BD457199BE38DBBDC86092693E
+	validpgpkeys = A2FF3A36AAA56654109064AB19802F8B0D70FC30
+	sha256sums = SKIP
+	sha256sums = d3e7adf5fcfc632887058ca84ca7b849a824dda5a03de854c8d3480ef0124ad1
+	sha256sums = d3723da5cff1dce0a29bb704264dacccab559373a00fbbe97b12745dcf144b3d
+	sha256sums = 167dbad8da63a70df243273b8a246357215f832406063d2637d87a1ae2b6f1bb
+
+pkgname = linux-vfio
+	pkgdesc = The Linux kernel and modules
+	depends = coreutils
+	depends = kmod
+	depends = initramfs
+	optdepends = crda: to set the correct wireless channels of your country
+	optdepends = linux-firmware: firmware images needed for some devices
+	provides = VIRTUALBOX-GUEST-MODULES
+	provides = WIREGUARD-MODULE
+	replaces = virtualbox-guest-modules-arch
+	replaces = wireguard-arch
+
+pkgname = linux-vfio-headers
+	pkgdesc = Headers and scripts for building modules for the Linux kernel
+
+pkgname = linux-vfio-docs
+	pkgdesc = Documentation for the Linux kernel
+
