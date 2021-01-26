@@ -34,8 +34,7 @@ jobs:
           git config --global user.email actions@github.com
           git config --global user.name 'Github Actions'
           git config --global core.editor true
-          git reset --soft $(git rev-list --max-parents=0  HEAD)
           git add .
-          git commit --amend -m "Update Repository" || true
-          git push --force-with-lease
+          git commit -m "Update Repository" || true
+          git push
         working-directory: repository
