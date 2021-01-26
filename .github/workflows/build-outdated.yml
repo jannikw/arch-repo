@@ -1,0 +1,115 @@
+on: 
+  workflow_dispatch:
+  push:
+name: Build outdated packages
+jobs:
+  check-outdated:
+    name: Check for outdated packages
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: repository
+          path: repository
+
+      # TODO: lz4?
+      - name: Install compression tools
+        run: sudo apt-get install libarchive-tools ncompress gzip bzip2 lrzip lzop lzip xz-utils zstd
+
+      - name: Check for outdated packages
+        id: check-outdated
+        uses: ./main/.github/actions/build-check-outdated
+        with:
+          repository: repository
+          packages: main
+
+    outputs:
+      matrix: ${{ steps.check-outdated.outputs.outdated-package }}
+
+  build-package:
+    name: Build package "${{ matrix.name }}"
+    needs: 
+      - check-outdated
+    if: needs.check-outdated.outputs.matrix != '[]'
+    strategy:
+      fail-fast: false
+      matrix: 
+        name: ${{ fromJson(needs.check-outdated.outputs.matrix) }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Check for build error issue
+        id: check-build-error
+        uses: ./.github/actions/build-error-issue-check
+        with:
+          package: ${{ matrix.name }}
+
+      - name: Build
+        id: build
+        if: steps.check-build-error.outputs.exists == 'false'
+        uses: ./.github/actions/build-docker
+        continue-on-error: true
+        timeout-minutes: 120
+        with:
+          who-to-greet: ${{ matrix.name }}
+
+      - name: Create issue for build error
+        if: steps.build.outcome == 'failure'
+        uses: ./.github/actions/build-error-issue-create
+        with:
+          package: ${{ matrix.name }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        if: steps.check-build-error.outputs.exists == 'false' && steps.build.outcome == 'success'
+        with:
+          name: ${{ matrix.name }}-artifact
+          path: __build__
+
+  upload-packages:
+    name: Upload built packages
+    needs:
+      - check-outdated
+      - build-package
+    if: needs.check-outdated.outputs.matrix != '[]'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Download artifacts of built packages
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: repository
+          path: repository
+
+      - name: Update repository
+        uses: ./main/.github/actions/repo-upload
+        with:
+          artifacts: "artifacts"
+          repository: "repository"
+
+      - name: Publish packages
+        run: |
+          git config --global user.email actions@github.com
+          git config --global user.name 'Github Actions'
+          git config --global core.editor true
+          git add .
+          git commit -m "Add built packages" || true
+          git push
+        working-directory: repository

@@ -1,0 +1,17 @@
+name: Check Outdated
+description: Checks if a package requires rebuilding after being updated or not yet having been built
+inputs:
+  packages:
+    description: "Who to greet"
+    required: true
+    default: "artifacts"
+  repository:
+    description: "Who to greet"
+    required: true
+    default: "repository"
+output:
+  outdated-package:
+    description: A list of packages to be built
+runs:
+  using: node12
+  main: dist/index.js

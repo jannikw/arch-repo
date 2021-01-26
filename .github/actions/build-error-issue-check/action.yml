@@ -1,0 +1,15 @@
+name: Check for a build error issue
+description: Checks for an existing build error issue
+inputs:
+  package:
+    description: "the package name"
+    required: true
+  token:
+    required: true
+    default: ${{ github.token }}
+outputs:
+  exists:
+    description: "' true' when there exists an build error issue or 'false' when not"
+runs:
+  using: node12
+  main: dist/index.js

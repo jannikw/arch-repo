@@ -1,0 +1,14 @@
+name: Update Repository Database
+description: Rebuild repository database with updated packages
+inputs:
+  repository:
+    description: "the path to the repository"
+    required: true
+    default: "repository"
+  name:
+    description: "The name for the database file"
+    required: true
+    default: "github-repo"
+runs:
+  using: node12
+  main: dist/index.js

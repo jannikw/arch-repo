@@ -1,0 +1,12 @@
+name: Create build error issue
+description: Creates an issue reporting that a package failed to be built
+inputs:
+  package:
+    description: "The package that failed to be built"
+    required: true
+  token:
+    required: true
+    default: ${{ github.token }}
+runs:
+  using: node12
+  main: dist/index.js

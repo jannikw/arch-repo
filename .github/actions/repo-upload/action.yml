@@ -1,0 +1,12 @@
+name: Update Repository
+description: Update the repository to include built package artifacts.
+inputs:
+  artifacts:
+    required: true
+    default: "artifacts"
+  repository:
+    required: true
+    default: "repository"
+runs:
+  using: node12
+  main: dist/index.js

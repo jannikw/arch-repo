@@ -1,0 +1,21 @@
+on: 
+  workflow_dispatch:
+  # Schedule checking for updates twice a day
+  schedule:
+    - cron: "30 0,12 * * *"
+name: Check for AUR updates 
+
+jobs:
+  check-updates:
+    name: Check for updates
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Check for updates
+        uses: ./main/.github/actions/aur-check-updates
+        with:
+          packages: main

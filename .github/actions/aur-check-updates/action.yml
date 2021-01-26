@@ -1,0 +1,12 @@
+name: Update Outdated
+description: Check for outdated packages on AUR and create Pull requests
+inputs:
+  packages:
+    description: "the directory of packages"
+    required: true
+  token:
+    required: true
+    default: ${{ github.token }}
+runs:
+  using: node12
+  main: dist/index.js
